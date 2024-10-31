@@ -55,6 +55,22 @@ class Module extends BaseModule {
 		] ) );
 	}
 
+
+	//Charger ma bibliotheque de KITS
+	private function load_default_kits() {
+    		$kits_path = __DIR__ . '/kits/';
+   		 $kits_files = glob($kits_path . '*.json');
+
+  		  foreach ($kits_files as $file) {
+      			  $kit_data = json_decode(file_get_contents($file), true);
+      			  if ($kit_data) {
+       			  $model = new \Elementor\Template($kit_data);
+          		  $model->save();
+    			  }
+  		  }
+		}
+
+
 	/**
 	 * @param array $connect_info
 	 * @param       $app
@@ -79,6 +95,7 @@ class Module extends BaseModule {
 	public function __construct() {
 		add_action( 'elementor/init', function () {
 			$this->set_kit_library_settings();
+			 $this->load_default_kits(); // Ajoutez ceci
 		}, 13 /** after elementor core */ );
 
 		add_filter( 'elementor/connect/additional-connect-info', function ( array $connect_info, $app = null ) {
